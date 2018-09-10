@@ -1,0 +1,99 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<script src="bar-chart.js"></script>
+<script src="../bower_components/chart.js/dist/Chart.bundle.js"></script>
+
+<dom-module id="bar-chart">
+
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            canvas {
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+        </style>
+   
+        <div id="canvas-holder">
+            <canvas id="myChart"></canvas>
+        </div>
+    </template>
+
+    <script>
+
+        class barChart extends Polymer.Element {
+
+            constructor() {
+                super();
+            }
+
+            static get is(){
+                return 'bar-chart';
+            }
+
+            static get properties(){
+                return {
+                    tipo: {
+                        type: String,
+                        value: 'bar'
+                    },
+                    titulo: {
+                        type: String,
+                        value: 'Chart'
+                    },
+                    titulos: Array,
+                    colores: Array,
+                    datos: Array
+                 };
+            }
+
+            cargar(){
+
+                var dataset = [];
+
+                for (let index = 0; index < this.titulos.length; index++) {
+                    const element = this.titulos[index];
+                    var objeto = {label: this.titulos[index], data: [this.datos[index]] , backgroundColor: this.colores[index], borderColor: 'rga(0,0,0)', borderWidth: 1};
+                    dataset.push(objeto);
+                };
+                
+                var ctx = this.$.myChart.getContext('2d');
+                var config ={
+                            type: 'bar',
+                            data: {
+                                datasets: dataset
+                            },
+                            options: {
+                                title: {
+                                    display: true,
+                                    text: this.titulo
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero:true
+                                        }
+                                    }]
+                                }
+                            }
+                        };
+
+                    window.myDoughnut = new Chart(ctx, config);
+                } 
+
+            connectedCallback(){
+                super.connectedCallback();  
+                this.cargar();
+            }             
+
+        }
+        
+        window.customElements.define(barChart.is, barChart);
+
+    </script>
+
+</dom-module>
+
+
